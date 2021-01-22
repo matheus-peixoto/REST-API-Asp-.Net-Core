@@ -126,5 +126,17 @@ namespace BooksAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            Book book = await _bookRepository.FindByIdAsync(id);
+            if (book == null)
+                return NotFound();
+
+            await _bookRepository.DeleteAsync(book);
+            return NoContent();
+        }
     }
 }
