@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace BooksAPI.Controllers
 {
     [ApiController]
-    [Route("authors")]
+    [Route("books")]
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
@@ -23,6 +23,24 @@ namespace BooksAPI.Controllers
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<ActionResult<List<BookReadDto>>> Get()
+        {
+            List<Book> booksFromDb = await _bookRepository.FindAllAsync();
+
+            List<BookReadDto> bookReadDtos = new List<BookReadDto>();
+            foreach (Book book in booksFromDb)
+            {
+                BookReadDto bookReadDto = _mapper.Map<BookReadDto>(book);
+                Author[] books = book.AuthorsBooks.Select(ab => ab.Author).ToArray();
+                bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(books);
+                bookReadDtos.Add(bookReadDto);
+            }
+
+            return Ok(bookReadDtos);
         }
     }
 }

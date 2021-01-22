@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BooksAPI.DTOs.AuthorDTOs;
 using BooksAPI.Models;
 using System;
 using System.Collections.Generic;
