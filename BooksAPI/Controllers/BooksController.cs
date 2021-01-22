@@ -2,6 +2,7 @@
 using BooksAPI.DTOs.BookDTOs;
 using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace BooksAPI.Controllers
         [Route("")]
         public async Task<ActionResult<List<BookReadDto>>> Get()
         {
-            List<Book> booksFromDb = await _bookRepository.FindAllAsync();
+            List<Book> booksFromDb = await _bookRepository.FindAllWithoutTrackingAsync();
 
             List<BookReadDto> bookReadDtos = new List<BookReadDto>();
             foreach (Book book in booksFromDb)
@@ -47,7 +48,7 @@ namespace BooksAPI.Controllers
         [Route("{id:int}", Name = "GetBookById")]
         public async Task<ActionResult<BookReadDto>> GetById(int id)
         {
-            Book bookFromDb = await _bookRepository.FindByIdAsync(id);
+            Book bookFromDb = await _bookRepository.FindAByIdWithoutTrackingAsync(id);
             if (bookFromDb == null)
                 return NotFound();
 

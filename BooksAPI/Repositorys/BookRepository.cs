@@ -19,15 +19,13 @@ namespace BooksAPI.Repositorys
             _context = dataContext;
         }
 
-        public async Task<Book> FindByIdAsync(int id)
-        {
-            return await _context.Book.Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).FirstOrDefaultAsync(a => a.Id == id);
-        }
+        public async Task<Book> FindByIdAsync(int id) => await _context.Book.Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).FirstOrDefaultAsync(a => a.Id == id);
 
-        public async Task<List<Book>> FindAllAsync()
-        {
-            return await _context.Book.Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).ToListAsync();
-        }
+        public async Task<Book> FindAByIdWithoutTrackingAsync(int id) => await _context.Book.AsNoTracking().Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<List<Book>> FindAllAsync() => await _context.Book.Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).ToListAsync();
+
+        public async Task<List<Book>> FindAllWithoutTrackingAsync() => await _context.Book.AsNoTracking().Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).ToListAsync();
 
         public async Task<List<Book>> FindAllWithFilterAsync(Expression<Func<Book, bool>> filter) =>
             await _context.Book.Include(b => b.AuthorsBooks).ThenInclude(ab => ab.Author).Where(filter).ToListAsync();

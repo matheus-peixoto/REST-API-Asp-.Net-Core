@@ -21,7 +21,11 @@ namespace BooksAPI.Repositorys
 
         public async Task<Author> FindByIdAsync(int id) => await _context.Author.Include(a => a.AuthorsBooks).ThenInclude(ab => ab.Book).FirstOrDefaultAsync(a => a.Id == id);
 
+        public async Task<Author> FindAByIdWithoutTrackingAsync(int id) => await _context.Author.AsNoTracking().Include(a => a.AuthorsBooks).ThenInclude(ab => ab.Book).FirstOrDefaultAsync(a => a.Id == id);
+
         public async Task<List<Author>> FindAllAsync() => await _context.Author.Include(a => a.AuthorsBooks).ThenInclude(ab => ab.Book).ToListAsync();
+
+        public async Task<List<Author>> FindAllWithoutTrackingAsync() => await _context.Author.AsNoTracking().Include(a => a.AuthorsBooks).ThenInclude(ab => ab.Book).ToListAsync();
 
         public async Task<List<Author>> FindAllWithFilterAsync(Expression<Func<Author, bool>> filter) =>
             await _context.Author.Include(a => a.AuthorsBooks).ThenInclude(ab => ab.Book).Where(filter).ToListAsync();
@@ -73,5 +77,4 @@ namespace BooksAPI.Repositorys
             await _context.SaveChangesAsync();
         }
     }
-
 }

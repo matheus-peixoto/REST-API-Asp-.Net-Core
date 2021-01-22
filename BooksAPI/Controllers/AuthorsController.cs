@@ -23,13 +23,14 @@ namespace BooksAPI.Controllers
         {
             _authorRepository = authorRepository;
             _bookRepository = bookRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("")]
         public async Task<ActionResult> Get()
         {
-            List<Author> authorsFromDb = await _authorRepository.FindAllAsync();
+            List<Author> authorsFromDb = await _authorRepository.FindAllWithoutTrackingAsync();
             List<AuthorReadDto> authorReadDtos = new List<AuthorReadDto>();
             foreach (Author author in authorsFromDb)
             {
@@ -46,7 +47,7 @@ namespace BooksAPI.Controllers
         [Route("{id:int}", Name = "GetAuthorById")]
         public async Task<ActionResult<AuthorReadDto>> GetById(int id)
         {
-            Author authorFromDb = await _authorRepository.FindByIdAsync(id);
+            Author authorFromDb = await _authorRepository.FindAByIdWithoutTrackingAsync(id);
             if (authorFromDb == null) return NotFound();
 
             AuthorReadDto authorReadDto = _mapper.Map<AuthorReadDto>(authorFromDb);
@@ -59,7 +60,8 @@ namespace BooksAPI.Controllers
         [Route("")]
         public async Task<ActionResult> Create([FromBody] AuthorCreateDto authorCreateDto)
         {
-            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            if (!ModelState.IsValid) 
+                return ValidationProblem(ModelState);
 
             Author author = _mapper.Map<Author>(authorCreateDto);
             author.RegisterDate = DateTime.Now;
