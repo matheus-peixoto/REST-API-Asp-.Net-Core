@@ -2,7 +2,7 @@
 API REST contruída com Asp .Net Core para fazer operações de CRUD no registro de livros e autores em um relacionamento NxN entre essas tabelas utilizando dos verbos GET, POST, PUT, PATCH e DELETE.
 
 ## O que foi utilizado
-Asp .Net Core Framework, banco de dados SQL Server com o ORM Entity Framework, abordamento Code First com Migrations, padrão Repository e padrão DTO com AutoMapper.
+Asp .Net Core Framework, banco de dados SQL Server com o ORM Entity Framework, abordagem Code First com Migrations, padrão Repository e padrão DTO com AutoMapper.
 
 
 ### Endpoints
