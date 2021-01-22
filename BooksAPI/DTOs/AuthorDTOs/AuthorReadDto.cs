@@ -9,7 +9,7 @@ namespace BooksAPI.DTOs.AuthorDTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public BookForReadAuthotDto[] Books { get; set; }
+        public BookForReadAuthorDto[] Books { get; set; }
         public DateTime BirthDate { get; set; }
         public string ShortBio { get; set; }
     }

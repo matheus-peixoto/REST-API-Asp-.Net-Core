@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BooksAPI.DTOs.AuthorDTOs
 {
-    public class BookForReadAuthotDto
+    public class BookForReadAuthorDto
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -13,7 +13,7 @@ namespace BooksAPI.DTOs.Profiles
         public AuthorProfile()
         {
             CreateMap<Author, AuthorReadDto>();
-            CreateMap<Book, BookForReadAuthotDto>();
+            CreateMap<Book, BookForReadAuthorDto>();
         }
     }
 }
