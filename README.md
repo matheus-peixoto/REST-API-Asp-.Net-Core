@@ -4,8 +4,9 @@ API REST contruída com Asp .Net Core para fazer operações de CRUD no registro
 ## O que foi utilizado
 Asp .Net Core Framework, banco de dados SQL Server com o ORM Entity Framework, abordamento Code First com Migrations, padrão Repository e padrão DTO com AutoMapper.
 
+
 ### Endpoints
-* Books
+Books
  * /books GET
  * /books/{id} GET
  * /books POST
@@ -14,7 +15,7 @@ Asp .Net Core Framework, banco de dados SQL Server com o ORM Entity Framework, a
  * /books/{id} PATCH
  * /books/{id} DELETE
  
-* Authors
+Authors
  * /authors GET
  * /authors/{id} GET
  * /authors POST
