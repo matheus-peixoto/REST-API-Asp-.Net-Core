@@ -107,5 +107,24 @@ namespace BooksAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch]
+        [Route("{id:int}")]
+        public async Task<ActionResult> UpdatePartial(int id, [FromBody] JsonPatchDocument<BookUpdateDto> bookUpdateDtoPatchDoc)
+        {
+            Book bookFromDb = await _bookRepository.FindByIdAsync(id);
+            if (bookFromDb == null)
+                return NotFound();
+
+            BookUpdateDto bookUpdateDto = _mapper.Map<BookUpdateDto>(bookFromDb);
+            bookUpdateDtoPatchDoc.ApplyTo(bookUpdateDto);
+            if (!TryValidateModel(bookUpdateDto))
+                return ValidationProblem(ModelState);
+
+            _mapper.Map(bookUpdateDto, bookFromDb);
+            await _bookRepository.UpdateAsync(bookFromDb);
+
+            return NoContent();
+        }
     }
 }

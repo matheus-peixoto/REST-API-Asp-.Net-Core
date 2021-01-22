@@ -15,6 +15,7 @@ namespace BooksAPI.DTOs.Profiles
             CreateMap<AuthorForCreateBookDto, Author>();
 
             CreateMap<BookUpdateDto, Book>();
+            CreateMap<Book, BookUpdateDto>();
         }
     }
 }
