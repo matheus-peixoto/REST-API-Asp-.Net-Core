@@ -42,5 +42,20 @@ namespace BooksAPI.Controllers
 
             return Ok(bookReadDtos);
         }
+
+        [HttpGet]
+        [Route("{id:int}", Name = "GetBookById")]
+        public async Task<ActionResult<BookReadDto>> GetById(int id)
+        {
+            Book bookFromDb = await _bookRepository.FindByIdAsync(id);
+            if (bookFromDb == null)
+                return NotFound();
+
+            BookReadDto bookReadDto = _mapper.Map<BookReadDto>(bookFromDb);
+            Author[] authors = bookFromDb.AuthorsBooks.Select(ab => ab.Author).ToArray();
+            bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(authors);
+
+            return Ok(bookReadDto);
+        }
     }
 }
