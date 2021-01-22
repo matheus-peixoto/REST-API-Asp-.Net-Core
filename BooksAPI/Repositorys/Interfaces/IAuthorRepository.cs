@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BooksAPI.Repositorys.Interfaces
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository : ICrud<Author>
     {
         public Task CreateAsync(Author obj, List<Book> books);
     }

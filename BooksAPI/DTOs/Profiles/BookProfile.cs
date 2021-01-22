@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using BooksAPI.DTOs.BookDTOs;
 using BooksAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BooksAPI.DTOs.Profiles
 {
@@ -14,6 +10,9 @@ namespace BooksAPI.DTOs.Profiles
         {
             CreateMap<Book, BookReadDto>();
             CreateMap<Author, AuthorForReadBookDto>();
+
+            CreateMap<BookCreateDto, Book>();
+            CreateMap<AuthorForCreateBookDto, Author>();
         }
     }
 }

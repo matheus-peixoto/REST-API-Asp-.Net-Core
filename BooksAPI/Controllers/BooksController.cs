@@ -57,5 +57,38 @@ namespace BooksAPI.Controllers
 
             return Ok(bookReadDto);
         }
+
+        [HttpPost]
+        [Route("")]
+        public async Task<ActionResult> Create([FromBody] BookCreateDto bookCreateDto)
+        {
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            Book book = _mapper.Map<Book>(bookCreateDto);
+            book.RegisterDate = DateTime.Now;
+
+            List<Author> authors = new List<Author>();
+            if (bookCreateDto.AuthorsIds != null && bookCreateDto.AuthorsIds.Length > 0)
+            {
+                authors = await _authorRepository.FindAllWithFilterAsync(a => bookCreateDto.AuthorsIds.Any(id => id == a.Id));
+            }
+            else if (bookCreateDto.Authors != null && bookCreateDto.Authors.Length > 0)
+            {
+                authors = _mapper.Map<List<Author>>(bookCreateDto.Authors);
+            }
+            else
+            {
+                ModelState.AddModelError("Authors", "You need to create the authors that wrote this book if they are not register, or pass the ids of the authors if they are already register");
+                ModelState.AddModelError("AuthorsIds", "You need to pass the ids of that authors that wrote this book, if they are already register, or create the authors if they are not register");
+                return ValidationProblem(ModelState);
+            }
+
+            await _bookRepository.CreateAsync(book, authors);
+            BookReadDto bookReadDto = _mapper.Map<BookReadDto>(book);
+            bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(authors);
+
+            return CreatedAtRoute("GetBookById", new { bookReadDto.Id }, bookReadDto);
+        }
     }
 }
