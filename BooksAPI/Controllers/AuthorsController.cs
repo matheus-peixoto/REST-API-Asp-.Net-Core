@@ -82,5 +82,22 @@ namespace BooksAPI.Controllers
 
             return CreatedAtRoute("GetAuthorById", new { author.Id }, authorReadDto);
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] AuthorUpdateDto authorUpdateDto)
+        {
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            Author author = await _authorRepository.FindByIdAsync(id);
+            if (author == null)
+                return NotFound();
+
+            _mapper.Map(authorUpdateDto, author);
+            await _authorRepository.UpdateAsync(author);
+
+            return NoContent();
+        }
     }
 }
