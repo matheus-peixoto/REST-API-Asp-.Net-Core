@@ -10,6 +10,7 @@ namespace BooksAPI.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public List<AuthorBook> AuthorsBooks { get; set; }
+        public DateTime ReleaseDate { get; set; }
         public string Sinopse { get; set; }
         public DateTime RegisterDate { get; set; }
     }

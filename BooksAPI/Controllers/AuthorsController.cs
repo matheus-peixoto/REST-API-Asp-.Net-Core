@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BooksAPI.Repositorys.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,13 @@ namespace BooksAPI.Controllers
     [Route("authors")]
     public class AuthorsController: ControllerBase
     {
-        
+        private readonly IAuthorRepository _authorRepository;
+        private readonly IBookRepository _bookRepository;
+
+        public AuthorsController(IAuthorRepository authorRepository, IBookRepository bookRepository)
+        {
+            _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
+        }
     }
 }
