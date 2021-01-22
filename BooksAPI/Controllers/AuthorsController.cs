@@ -2,6 +2,7 @@
 using BooksAPI.DTOs.AuthorDTOs;
 using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,25 @@ namespace BooksAPI.Controllers
 
             _mapper.Map(authorUpdateDto, author);
             await _authorRepository.UpdateAsync(author);
+
+            return NoContent();
+        }
+
+        [HttpPatch]
+        [Route("{id:int}")]
+        public async Task<ActionResult> UpdatePartial(int id, [FromBody] JsonPatchDocument<AuthorUpdateDto> authorUpdateDtoPatchDoc)
+        {
+            Author authorFromDb = await _authorRepository.FindByIdAsync(id);
+            if (authorFromDb == null)
+                return NotFound();
+
+            AuthorUpdateDto authorUpdateDto = _mapper.Map<AuthorUpdateDto>(authorFromDb);
+            authorUpdateDtoPatchDoc.ApplyTo(authorUpdateDto);
+            if (!TryValidateModel(authorUpdateDto))
+                return ValidationProblem(ModelState);
+
+            _mapper.Map(authorUpdateDto, authorFromDb);
+            await _authorRepository.UpdateAsync(authorFromDb);
 
             return NoContent();
         }
