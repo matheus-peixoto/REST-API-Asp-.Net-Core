@@ -1,4 +1,7 @@
-﻿using BooksAPI.Repositorys.Interfaces;
+﻿using AutoMapper;
+using BooksAPI.DTOs.BookDTOs;
+using BooksAPI.Models;
+using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,11 +16,13 @@ namespace BooksAPI.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IMapper _mapper;
 
-        public BooksController(IBookRepository bookRepository, IAuthorRepository authorRepository)
+        public BooksController(IBookRepository bookRepository, IAuthorRepository authorRepository, IMapper mapper)
         {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
+            _mapper = mapper;
         }
     }
 }
