@@ -8,6 +8,5 @@ namespace BooksAPI.Repositorys.Interfaces
     {
         public Task<Author> FindAByIdWithoutTrackingAsync(int id);
         public Task<List<Author>> FindAllWithoutTrackingAsync();
-        public Task CreateAsync(Author obj, List<Book> books);
     }
 }

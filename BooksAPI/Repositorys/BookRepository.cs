@@ -36,19 +36,6 @@ namespace BooksAPI.Repositorys
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateAsync(Book obj, List<Author> authors)
-        {
-            obj.AuthorsBooks = new List<AuthorBook>();
-            foreach (Author author in authors)
-            {
-                author.RegisterDate = DateTime.Now;
-                obj.AuthorsBooks.Add(new AuthorBook() { Author = author, Book = obj });
-            }
-
-            _context.Add(obj);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task UpdateAsync(Book obj)
         {
             _context.Book.Update(obj);

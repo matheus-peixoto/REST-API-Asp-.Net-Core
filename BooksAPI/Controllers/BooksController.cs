@@ -70,13 +70,20 @@ namespace BooksAPI.Controllers
             book.RegisterDate = DateTime.Now;
 
             List<Author> authors = new List<Author>();
+            bool isAuthorsNew = false;
             if (bookCreateDto.AuthorsIds != null && bookCreateDto.AuthorsIds.Length > 0)
             {
                 authors = await _authorRepository.FindAllWithFilterAsync(a => bookCreateDto.AuthorsIds.Any(id => id == a.Id));
+                if (authors.Count == 0)
+                {
+                    ModelState.AddModelError("AuthorsIds", "The passed ids does not match with any author");
+                    return ValidationProblem(ModelState);
+                }
             }
             else if (bookCreateDto.Authors != null && bookCreateDto.Authors.Length > 0)
             {
                 authors = _mapper.Map<List<Author>>(bookCreateDto.Authors);
+                isAuthorsNew = true;
             }
             else
             {
@@ -85,7 +92,15 @@ namespace BooksAPI.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            await _bookRepository.CreateAsync(book, authors);
+            book.AuthorsBooks = new List<AuthorBook>();
+            foreach (Author author in authors)
+            {
+                if (isAuthorsNew)
+                    author.RegisterDate = DateTime.Now;
+
+                book.AuthorsBooks.Add(new AuthorBook() { Author = author, Book = book });
+            }
+            await _bookRepository.CreateAsync(book);
             BookReadDto bookReadDto = _mapper.Map<BookReadDto>(book);
             bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(authors);
 
