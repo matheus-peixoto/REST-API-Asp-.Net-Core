@@ -49,15 +49,9 @@ namespace BooksAPI.Repositorys
             //Authors that just write this book
             List<Author> authors = await _context.Author.Include(a => a.AuthorsBooks).Where(a => authorsIds.Any(id => id == a.Id) && a.AuthorsBooks.Count == 1).ToListAsync();
 
-            foreach (AuthorBook authorBook in obj.AuthorsBooks)
-            {
-                _context.Remove(authorBook);
-            }
+            _context.AuthorBook.RemoveRange(obj.AuthorsBooks);
 
-            foreach (Author author in authors)
-            {
-                _context.Remove(author);
-            }
+            _context.Author.RemoveRange(authors);
 
             _context.Book.Remove(obj);
 
