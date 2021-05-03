@@ -31,7 +31,7 @@ namespace BooksAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson(options => { options.SerializerSettings.DateFormatString = "yyyy-MM-dd"; });
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SQL Server")));
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("BooksAPISQL_ConnectionString", EnvironmentVariableTarget.User)));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBookRepository, BookRepository>();

@@ -63,9 +63,6 @@ namespace BooksAPI.Controllers
         [Route("")]
         public async Task<ActionResult> Create([FromBody] BookCreateDto bookCreateDto)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
             Book book = _mapper.Map<Book>(bookCreateDto);
             book.RegisterDate = DateTime.Now;
 
@@ -111,9 +108,6 @@ namespace BooksAPI.Controllers
         [Route("{id:int}")]
         public async Task<ActionResult> Update(int id, [FromBody] BookUpdateDto bookUpdateDto)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
             Book book = await _bookRepository.FindByIdAsync(id);
             if (book == null)
                 return NotFound();
