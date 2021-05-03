@@ -48,8 +48,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult<AuthorReadDto>> GetById(int id)
         {
             Author authorFromDb = await _authorRepository.FindAByIdWithoutTrackingAsync(id);
-            if (authorFromDb == null)
-                return NotFound();
+            if (authorFromDb is null) return NotFound();
 
             AuthorReadDto authorReadDto = _mapper.Map<AuthorReadDto>(authorFromDb);
             Book[] books = authorFromDb.AuthorsBooks.Select(ab => ab.Book).ToArray();
