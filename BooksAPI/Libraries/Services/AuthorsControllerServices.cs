@@ -28,16 +28,16 @@ namespace BooksAPI.Libraries.Services
             return authorDto;
         }
 
-        public async Task<Author> FilledOutAuthorOnCreateAsync(AuthorCreateDto authorDto)
+        public async Task<Author> FilledAuthorOnCreateAsync(AuthorCreateDto authorDto)
         {
             Author author = _mapper.Map<Author>(authorDto);
             author.RegisterDate = DateTime.Now;
             List<Book> books = await GetBooksOnCreateAsync(authorDto);
-            author = FilledOutAuthorBooksOnCreateProperty(author, authorDto, books);
+            author = FilledAuthorBooksOnCreateProperty(author, authorDto, books);
             return author;
         }
 
-        private Author FilledOutAuthorBooksOnCreateProperty(Author author, AuthorCreateDto authorDto, List<Book> books)
+        private Author FilledAuthorBooksOnCreateProperty(Author author, AuthorCreateDto authorDto, List<Book> books)
         {
             List<AuthorBook> authorBooks = new List<AuthorBook>();
             foreach (Book book in books)

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BooksAPI.DTOs.AuthorDTOs;
+﻿using BooksAPI.DTOs.AuthorDTOs;
 using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;

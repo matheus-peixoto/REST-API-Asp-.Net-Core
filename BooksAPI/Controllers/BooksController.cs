@@ -49,8 +49,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult<BookReadDto>> GetById(int id)
         {
             Book bookFromDb = await _bookRepository.FindAByIdWithoutTrackingAsync(id);
-            if (bookFromDb == null)
-                return NotFound();
+            if (bookFromDb == null) return NotFound();
 
             BookReadDto bookReadDto = _mapper.Map<BookReadDto>(bookFromDb);
             Author[] authors = bookFromDb.AuthorsBooks.Select(ab => ab.Author).ToArray();
@@ -109,8 +108,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult> Update(int id, [FromBody] BookUpdateDto bookUpdateDto)
         {
             Book book = await _bookRepository.FindByIdAsync(id);
-            if (book == null)
-                return NotFound();
+            if (book == null) return NotFound();
 
             _mapper.Map(bookUpdateDto, book);
             await _bookRepository.UpdateAsync(book);
@@ -123,13 +121,11 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult> UpdatePartial(int id, [FromBody] JsonPatchDocument<BookUpdateDto> bookUpdateDtoPatchDoc)
         {
             Book bookFromDb = await _bookRepository.FindByIdAsync(id);
-            if (bookFromDb == null)
-                return NotFound();
+            if (bookFromDb == null) return NotFound();
 
             BookUpdateDto bookUpdateDto = _mapper.Map<BookUpdateDto>(bookFromDb);
             bookUpdateDtoPatchDoc.ApplyTo(bookUpdateDto);
-            if (!TryValidateModel(bookUpdateDto))
-                return ValidationProblem(ModelState);
+            if (!TryValidateModel(bookUpdateDto)) return ValidationProblem(ModelState);
 
             _mapper.Map(bookUpdateDto, bookFromDb);
             await _bookRepository.UpdateAsync(bookFromDb);
@@ -142,8 +138,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             Book book = await _bookRepository.FindByIdAsync(id);
-            if (book == null)
-                return NotFound();
+            if (book == null) return NotFound();
 
             await _bookRepository.DeleteAsync(book);
             return NoContent();

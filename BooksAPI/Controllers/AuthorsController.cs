@@ -18,14 +18,12 @@ namespace BooksAPI.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly IAuthorRepository _authorRepository;
-        private readonly IBookRepository _bookRepository;
         private readonly AuthorsControllerServices _controllerServices;
         private readonly IMapper _mapper;
 
-        public AuthorsController(IAuthorRepository authorRepository, IBookRepository bookRepository, AuthorsControllerServices controllerServices, IMapper mapper)
+        public AuthorsController(IAuthorRepository authorRepository, AuthorsControllerServices controllerServices, IMapper mapper)
         {
             _authorRepository = authorRepository;
-            _bookRepository = bookRepository;
             _controllerServices = controllerServices;
             _mapper = mapper;
         }
@@ -68,7 +66,7 @@ namespace BooksAPI.Controllers
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
-            Author author = await _controllerServices.FilledOutAuthorOnCreateAsync(authorCreateDto);
+            Author author = await _controllerServices.FilledAuthorOnCreateAsync(authorCreateDto);
             await _authorRepository.CreateAsync(author);
             AuthorReadDto authorReadDto = _controllerServices.GetAuthorReadDtoOnCreate(author);
 
@@ -83,8 +81,7 @@ namespace BooksAPI.Controllers
                 return ValidationProblem(ModelState);
 
             Author author = await _authorRepository.FindByIdAsync(id);
-            if (author == null)
-                return NotFound();
+            if (author == null) return NotFound();
 
             _mapper.Map(authorUpdateDto, author);
             await _authorRepository.UpdateAsync(author);
@@ -97,13 +94,11 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult> UpdatePartial(int id, [FromBody] JsonPatchDocument<AuthorUpdateDto> authorUpdateDtoPatchDoc)
         {
             Author authorFromDb = await _authorRepository.FindByIdAsync(id);
-            if (authorFromDb == null)
-                return NotFound();
+            if (authorFromDb == null) return NotFound();
 
             AuthorUpdateDto authorUpdateDto = _mapper.Map<AuthorUpdateDto>(authorFromDb);
             authorUpdateDtoPatchDoc.ApplyTo(authorUpdateDto);
-            if (!TryValidateModel(authorUpdateDto))
-                return ValidationProblem(ModelState);
+            if (!TryValidateModel(authorUpdateDto)) return ValidationProblem(ModelState);
 
             _mapper.Map(authorUpdateDto, authorFromDb);
             await _authorRepository.UpdateAsync(authorFromDb);
@@ -116,8 +111,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             Author author = await _authorRepository.FindByIdAsync(id);
-            if (author == null)
-                return NotFound();
+            if (author == null) return NotFound();
 
             await _authorRepository.DeleteAsync(author);
             return NoContent();
