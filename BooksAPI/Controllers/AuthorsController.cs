@@ -63,13 +63,9 @@ namespace BooksAPI.Controllers
         [ValidateAuthorOnCreate]
         public async Task<ActionResult> Create([FromBody] AuthorCreateDto authorCreateDto)
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem(ModelState);
-
             Author author = await _controllerServices.FilledAuthorOnCreateAsync(authorCreateDto);
             await _authorRepository.CreateAsync(author);
             AuthorReadDto authorReadDto = _controllerServices.GetAuthorReadDtoOnCreate(author);
-
             return CreatedAtRoute("GetAuthorById", new { author.Id }, authorReadDto);
         }
 
@@ -85,7 +81,6 @@ namespace BooksAPI.Controllers
 
             _mapper.Map(authorUpdateDto, author);
             await _authorRepository.UpdateAsync(author);
-
             return NoContent();
         }
 
@@ -102,7 +97,6 @@ namespace BooksAPI.Controllers
 
             _mapper.Map(authorUpdateDto, authorFromDb);
             await _authorRepository.UpdateAsync(authorFromDb);
-
             return NoContent();
         }
 

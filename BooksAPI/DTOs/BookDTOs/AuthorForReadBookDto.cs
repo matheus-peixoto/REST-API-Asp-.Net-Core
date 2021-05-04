@@ -11,5 +11,15 @@ namespace BooksAPI.DTOs.BookDTOs
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
         public string ShortBio { get; set; }
+
+        public AuthorForReadBookDto() { }
+
+        public AuthorForReadBookDto(int id, string name, DateTime birthDate, string shortBio)
+        {
+            Id = id;
+            Name = name;
+            BirthDate = birthDate;
+            ShortBio = shortBio;
+        }
     }
 }

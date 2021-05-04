@@ -31,6 +31,7 @@ namespace BooksAPI
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<AuthorsControllerServices>();
             services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<BooksControllerServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

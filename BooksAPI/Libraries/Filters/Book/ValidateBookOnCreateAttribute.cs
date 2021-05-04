@@ -23,7 +23,7 @@ namespace BooksAPI.Libraries.Filters.Book
                     .AddModelError("Authors", "You need to create the authors that wrote this book if they are not register, or pass the ids of the authors if they are already register");
                 context.Result = new BadRequestObjectResult(context.ModelState);
             }
-            else if (ErrorOnAuthorsId(bookDto))
+            else if (!ErrorOnAuthorsId(bookDto))
             {
                 if (await NotFoundedAuthorsIdAsync(bookDto, authoRepository))
                 {
