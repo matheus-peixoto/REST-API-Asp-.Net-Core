@@ -1,5 +1,4 @@
 ﻿using BooksAPI.DTOs.AuthorDTOs;
-using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -42,7 +41,7 @@ namespace BooksAPI.Libraries.Filters.Author
 
         private async Task<bool> NotFoundedBooksIdsAsync(AuthorCreateDto authorDto, IBookRepository bookRepository)
         {
-            List<Book> books = await bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
+            List<Models.Book> books = await bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
             return books.Count == 0;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BooksAPI.DTOs.BookDTOs;
+using BooksAPI.Libraries.Filters.Book;
 using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
