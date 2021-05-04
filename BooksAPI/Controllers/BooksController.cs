@@ -6,9 +6,7 @@ using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BooksAPI.Controllers
@@ -19,13 +17,11 @@ namespace BooksAPI.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly BooksControllerServices _services;
-        private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
 
-        public BooksController(IBookRepository bookRepository, IAuthorRepository authorRepository, BooksControllerServices services, IMapper mapper)
+        public BooksController(IBookRepository bookRepository, BooksControllerServices services, IMapper mapper)
         {
             _bookRepository = bookRepository;
-            _authorRepository = authorRepository;
             _services = services;
             _mapper = mapper;
         }
@@ -35,16 +31,7 @@ namespace BooksAPI.Controllers
         public async Task<ActionResult<List<BookReadDto>>> Get()
         {
             List<Book> booksFromDb = await _bookRepository.FindAllWithoutTrackingAsync();
-
-            List<BookReadDto> bookReadDtos = new List<BookReadDto>();
-            foreach (Book book in booksFromDb)
-            {
-                BookReadDto bookReadDto = _mapper.Map<BookReadDto>(book);
-                Author[] books = book.AuthorsBooks.Select(ab => ab.Author).ToArray();
-                bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(books);
-                bookReadDtos.Add(bookReadDto);
-            }
-
+            List<BookReadDto> bookReadDtos = _services.GetBooksReadDto(booksFromDb);
             return Ok(bookReadDtos);
         }
 
@@ -55,10 +42,7 @@ namespace BooksAPI.Controllers
             Book bookFromDb = await _bookRepository.FindAByIdWithoutTrackingAsync(id);
             if (bookFromDb == null) return NotFound();
 
-            BookReadDto bookReadDto = _mapper.Map<BookReadDto>(bookFromDb);
-            Author[] authors = bookFromDb.AuthorsBooks.Select(ab => ab.Author).ToArray();
-            bookReadDto.Authors = _mapper.Map<AuthorForReadBookDto[]>(authors);
-
+            BookReadDto bookReadDto = _services.GetBookReadDto(bookFromDb);
             return Ok(bookReadDto);
         }
 
@@ -69,7 +53,7 @@ namespace BooksAPI.Controllers
         {
             Book book = await _services.FilledBookOnCreateAsync(bookCreateDto);
             await _bookRepository.CreateAsync(book);
-            BookReadDto bookReadDto = _services.GetBookReadDtoOnCreate(book);
+            BookReadDto bookReadDto = _services.GetBookReadDto(book);
             return CreatedAtRoute("GetBookById", new { bookReadDto.Id }, bookReadDto);
         }
 

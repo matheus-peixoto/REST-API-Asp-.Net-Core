@@ -20,13 +20,22 @@ namespace BooksAPI.Libraries.Services
             _authorRepository = authorRepository;
         }
 
-        public BookReadDto GetBookReadDtoOnCreate(Book book)
+        public BookReadDto GetBookReadDto(Book book)
         {
             BookReadDto bookDto = _mapper.Map<BookReadDto>(book);
-            IEnumerable<AuthorForReadBookDto> authors = book.AuthorsBooks
-                .Select(ab => new AuthorForReadBookDto(ab.AuthorId, ab.Author.Name, ab.Author.BirthDate, ab.Author.ShortBio));
-            bookDto.Authors = authors.ToArray();
+            bookDto.Authors = book.AuthorsBooks
+                .Select(ab => new AuthorForReadBookDto(ab.AuthorId, ab.Author.Name, ab.Author.BirthDate, ab.Author.ShortBio)).ToArray();
             return bookDto;
+        }
+
+        public List<BookReadDto> GetBooksReadDto(List<Book> books)
+        {
+            List<BookReadDto> bookReadDtos = new List<BookReadDto>();
+            foreach (Book book in books)
+            {
+                bookReadDtos.Add(GetBookReadDto(book));
+            }
+            return bookReadDtos;
         }
 
         public async Task<Book> FilledBookOnCreateAsync(BookCreateDto bookDto)

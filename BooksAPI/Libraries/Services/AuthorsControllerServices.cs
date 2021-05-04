@@ -32,8 +32,7 @@ namespace BooksAPI.Libraries.Services
             List<AuthorReadDto> authorReadDtos = new List<AuthorReadDto>();
             foreach (Author author in authors)
             {
-                AuthorReadDto authorReadDto = GetAuthorReadDto(author);
-                authorReadDtos.Add(authorReadDto);
+                authorReadDtos.Add(GetAuthorReadDto(author));
             }
             return authorReadDtos;
         }
@@ -52,7 +51,7 @@ namespace BooksAPI.Libraries.Services
             List<AuthorBook> authorBooks = new List<AuthorBook>();
             foreach (Book book in books)
             {
-                if (AreBooksNewOnCreate(authorDto))
+                if (AreBooksNewOnCreate(authorDto)) 
                     book.RegisterDate = DateTime.Now;
                 authorBooks.Add(new AuthorBook() { Author = author, Book = book });
             }
@@ -67,7 +66,6 @@ namespace BooksAPI.Libraries.Services
                 books = _mapper.Map<List<Book>>(authorDto.Books);
             else
                 books = await _bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
-
 
             return books;
         }
