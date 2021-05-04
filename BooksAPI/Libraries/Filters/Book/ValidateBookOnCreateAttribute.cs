@@ -37,11 +37,11 @@ namespace BooksAPI.Libraries.Filters.Book
                 await next();
         }
 
-        public bool ErrorOnAuthorsId(BookCreateDto bookDto) => bookDto.AuthorsIds == null || bookDto.AuthorsIds.Length == 0;
+        private bool ErrorOnAuthorsId(BookCreateDto bookDto) => bookDto.AuthorsIds == null || bookDto.AuthorsIds.Length == 0;
 
-        public bool ErrorOnAuthors(BookCreateDto bookDto) => bookDto.Authors == null || bookDto.Authors.Length == 0;
+        private bool ErrorOnAuthors(BookCreateDto bookDto) => bookDto.Authors == null || bookDto.Authors.Length == 0;
 
-        public async Task<bool> NotFoundedAuthorsIdAsync(BookCreateDto bookDto, IAuthorRepository authorRepository)
+        private async Task<bool> NotFoundedAuthorsIdAsync(BookCreateDto bookDto, IAuthorRepository authorRepository)
         {
             List<Models.Author> authors = await authorRepository.FindAllWithFilterAsync(b => bookDto.AuthorsIds.Any(id => id == b.Id));
             return authors.Count == 0;

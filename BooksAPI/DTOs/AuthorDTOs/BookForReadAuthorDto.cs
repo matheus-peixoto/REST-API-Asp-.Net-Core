@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BooksAPI.DTOs.AuthorDTOs
 {
@@ -11,5 +8,15 @@ namespace BooksAPI.DTOs.AuthorDTOs
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Sinopse { get; set; }
+
+        public BookForReadAuthorDto() { }
+
+        public BookForReadAuthorDto(int id, string title, DateTime releaseDate, string sinopse)
+        {
+            Id = id;
+            Title = title;
+            ReleaseDate = releaseDate;
+            Sinopse = sinopse;
+        }
     }
 }
