@@ -13,5 +13,15 @@ namespace BooksAPI.Models
         public DateTime ReleaseDate { get; set; }
         public string Sinopse { get; set; }
         public DateTime RegisterDate { get; set; }
+
+        public Book() { }
+
+        public Book(int id, string title, DateTime releaseDate, string sinopse)
+        {
+            Id = id;
+            Title = title;
+            ReleaseDate = releaseDate;
+            Sinopse = sinopse;
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BooksAPI.DTOs.AuthorDTOs;
+using BooksAPI.Libraries.Filters.Author;
+using BooksAPI.Libraries.Services;
 using BooksAPI.Models;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
@@ -17,12 +19,14 @@ namespace BooksAPI.Controllers
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly AuthorsControllerServices _controllerServices;
         private readonly IMapper _mapper;
 
-        public AuthorsController(IAuthorRepository authorRepository, IBookRepository bookRepository, IMapper mapper)
+        public AuthorsController(IAuthorRepository authorRepository, IBookRepository bookRepository, AuthorsControllerServices controllerServices, IMapper mapper)
         {
             _authorRepository = authorRepository;
             _bookRepository = bookRepository;
+            _controllerServices = controllerServices;
             _mapper = mapper;
         }
 
@@ -58,49 +62,15 @@ namespace BooksAPI.Controllers
 
         [HttpPost]
         [Route("")]
+        [ValidateAuthorOnCreate]
         public async Task<ActionResult> Create([FromBody] AuthorCreateDto authorCreateDto)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
-            Author author = _mapper.Map<Author>(authorCreateDto);
-            author.RegisterDate = DateTime.Now;
-
-            List<Book> books = new List<Book>();
-            bool isBooksNew = false;
-            if (authorCreateDto.BooksIds != null && authorCreateDto.BooksIds.Length > 0)
-            {
-                books = await _bookRepository.FindAllWithFilterAsync(b => authorCreateDto.BooksIds.Any(id => id == b.Id));
-                if (books.Count == 0)
-                {
-                    ModelState.AddModelError("BooksIds", "The passed ids does not match with any book");
-                    return ValidationProblem(ModelState);
-                }
-            }
-            else if (authorCreateDto.Books != null && authorCreateDto.Books.Length > 0)
-            {
-                books = _mapper.Map<List<Book>>(authorCreateDto.Books);
-                isBooksNew = true;
-            }
-            else
-            {
-                ModelState.AddModelError("BooksIds", "You need to pass the ids of the books that this author wrote or create the books that this author wrote");
-                ModelState.AddModelError("Books", "You need to create the books that this author wrote or pass the ids of the books that this author wrote");
-                return ValidationProblem(ModelState);
-            }
-
-            author.AuthorsBooks = new List<AuthorBook>();
-            foreach (Book book in books)
-            {
-                if (isBooksNew)
-                    book.RegisterDate = DateTime.Now;
-
-                author.AuthorsBooks.Add(new AuthorBook() { Author = author, Book = book });
-            }
+            Author author = await _controllerServices.FilledOutAuthorOnCreateAsync(authorCreateDto);
             await _authorRepository.CreateAsync(author);
-
-            AuthorReadDto authorReadDto = _mapper.Map<AuthorReadDto>(author);
-            authorReadDto.Books = _mapper.Map<BookForReadAuthorDto[]>(books);
+            AuthorReadDto authorReadDto = _controllerServices.GetAuthorReadDtoOnCreate(author);
 
             return CreatedAtRoute("GetAuthorById", new { author.Id }, authorReadDto);
         }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using BooksAPI.Data;
+using BooksAPI.Libraries.Services;
 using BooksAPI.Repositorys;
 using BooksAPI.Repositorys.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +29,7 @@ namespace BooksAPI
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("BooksAPISQL_ConnectionString", EnvironmentVariableTarget.User)));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<AuthorsControllerServices>();
             services.AddScoped<IBookRepository, BookRepository>();
         }
 
