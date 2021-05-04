@@ -18,22 +18,33 @@ namespace BooksAPI.Libraries.Filters.Author
             AuthorCreateDto authorDto = (AuthorCreateDto)context.ActionArguments["authorCreateDto"];
             IBookRepository bookRepository = (IBookRepository)context.HttpContext.RequestServices.GetService(typeof(IBookRepository));
 
-            if (authorDto.BooksIds is null || authorDto.BooksIds.Length == 0 || (await GetBooksAsync(authorDto, bookRepository)).Count == 0)
-            {
-                context.ModelState.AddModelError("BooksIds", "The passed ids does not match with any book");
-                context.Result = new BadRequestObjectResult(context.ModelState);
-            }
-            else if (authorDto.Books is null || authorDto.Books.Length == 0)
+            if (ErrorOnBooks(authorDto) && ErrorOnBooksIds(authorDto))
             {
                 context.ModelState.AddModelError("BooksIds", "You need to pass the ids of the books that this author wrote or create the books that this author wrote");
                 context.ModelState.AddModelError("Books", "You need to create the books that this author wrote or pass the ids of the books that this author wrote");
                 context.Result = new BadRequestObjectResult(context.ModelState);
             }
+            else if (!ErrorOnBooksIds(authorDto))
+            {
+                if (await NotFoundedBooksIdsAsync(authorDto, bookRepository))
+                {
+                    context.ModelState.AddModelError("BooksIds", "The passed ids does not match with any book. You n");
+                    context.Result = new BadRequestObjectResult(context.ModelState);
+                }
+                else await next();       
+            }
             else
                 await next();
         }
 
-        public async Task<List<Book>> GetBooksAsync(AuthorCreateDto authorDto, IBookRepository bookRepository) 
-            => await bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id)); 
+        private bool ErrorOnBooksIds(AuthorCreateDto authorDto) => authorDto.BooksIds is null || authorDto.BooksIds.Length == 0;
+
+        private bool ErrorOnBooks(AuthorCreateDto authorDto) => authorDto.Books is null || authorDto.Books.Length == 0;
+
+        private async Task<bool> NotFoundedBooksIdsAsync(AuthorCreateDto authorDto, IBookRepository bookRepository)
+        {
+            List<Book> books = await bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
+            return books.Count == 0;
+        }
     }
 }

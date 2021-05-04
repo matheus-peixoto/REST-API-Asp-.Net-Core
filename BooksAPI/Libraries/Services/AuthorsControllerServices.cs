@@ -39,22 +39,25 @@ namespace BooksAPI.Libraries.Services
 
         private Author FilledOutAuthorBooksOnCreateProperty(Author author, AuthorCreateDto authorDto, List<Book> books)
         {
+            List<AuthorBook> authorBooks = new List<AuthorBook>();
             foreach (Book book in books)
             {
                 if (AreBooksNewOnCreate(authorDto))
                     book.RegisterDate = DateTime.Now;
-                author.AuthorsBooks.Add(new AuthorBook() { Author = author, Book = book });
+                authorBooks.Add(new AuthorBook() { Author = author, Book = book });
             }
+            author.AuthorsBooks = authorBooks;
             return author;
         }
 
         private async Task<List<Book>> GetBooksOnCreateAsync(AuthorCreateDto authorDto)
         {
             List<Book> books = new List<Book>();
-            if (!AreBooksNewOnCreate(authorDto))
-                books = await _bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
-            else
+            if (AreBooksNewOnCreate(authorDto))
                 books = _mapper.Map<List<Book>>(authorDto.Books);
+            else
+                books = await _bookRepository.FindAllWithFilterAsync(b => authorDto.BooksIds.Any(id => id == b.Id));
+
 
             return books;
         }
