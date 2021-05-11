@@ -1,5 +1,5 @@
-# REST API Asp .Net Core
-API REST construída com Asp .Net Core para fazer operações de CRUD no registro de livros e autores em um relacionamento NxN entre essas tabelas utilizando dos verbos GET, POST, PUT, PATCH e DELETE.
+<h1 align="center">REST API Asp .Net Core</h1>
+<p>API REST construída com Asp .Net Core para fazer operações de CRUD no registro de livros e autores em um relacionamento NxN entre essas tabelas utilizando dos verbos GET, POST, PUT, PATCH e DELETE.</p>
 
 ## Objetivo do projeto
 Construção de uma Web API, API REST, para um possível negócio de livros fornecendo dados e funcionalidades sobre seus livros e autores.
